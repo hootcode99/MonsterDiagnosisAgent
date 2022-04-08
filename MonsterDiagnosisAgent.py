@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, product
 import numpy as np
 
 
@@ -20,8 +20,9 @@ def check_match(disease_combinations, patient_vitamins):
     print("---------------")
     patient_vitamins_values = list(patient_vitamins.values())
     match = None
-    check_array = []
+
     for name, vitamins in list(disease_combinations.items()):
+        check_array = []
         print(name, vitamins)
         for vitamin in vitamins:
             if vitamin > 1:
@@ -82,10 +83,12 @@ class MonsterDiagnosisAgent:
         while current_match is None:
 
             # generate a new set of combinations
-            combinations_dict = self.generate_combinations(values_list, names_list)
+            combinations_dict = self.generate_combinations(values_list, names_list, list(initial_diseases.values()),
+                                                           list(initial_diseases.keys()))
             print("\n")
             print("Loop Update")
             print("---------------")
+
             # update the working values
             values_list = list(combinations_dict.values())
             names_list = list(combinations_dict.keys())
@@ -108,13 +111,24 @@ class MonsterDiagnosisAgent:
 
         return name_array, value_array
 
-    def generate_combinations(self, values_list, names_list):
+    def generate_combinations(self, values_list, names_list, initial_values, initial_names):
         print("Generate Combinations")
         print("----------------------")
+        values_combine = []
+        names_combine = []
+
+        for pair in product(values_list, initial_values):
+            if pair[1] != pair[0]:
+                values_combine.append(pair)
+        print(*values_combine, sep='\n')
+
+        for pair in product(names_list, initial_names):
+            if pair[1] not in pair[0]:
+                names_combine.append(pair)
         # find value combinations
-        values_combine = combinations(values_list, 2)
+        # values_combine = combinations(values_list, 2)
         # get corresponding name combinations
-        names_combine = combinations(names_list, 2)
+        # names_combine = combinations(names_list, 2)
 
         comb_dict = {}
         for val_pair in values_combine:
