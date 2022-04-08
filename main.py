@@ -37,8 +37,8 @@ def test():
     patient_3 = {'A': '0', 'B': '+', 'C': '-', 'D': '0', 'E': '+', 'F': '-', 'G': '0', 'H': '0', 'I': '0',
                  'J': '0', 'K': '+', 'L': '+', 'M': '-', 'N': '0', 'O': '0', 'P': '0', 'Q': '-', 'R': '0',
                  'S': '0', 'T': '0', 'U': '-', 'V': '+', 'W': '0', 'X': '-', 'Y': '-', 'Z': '-'}
-    # print(test_agent.solve(diseases, patient_1))
-    print(test_agent.solve(diseases, patient_2))
+    print(test_agent.solve(diseases, patient_1))
+    # print(test_agent.solve(diseases, patient_2))
     # print(test_agent.solve(diseases, patient_3))
 
 

@@ -23,7 +23,7 @@ def check_match(disease_combinations, patient_vitamins):
 
     for name, vitamins in list(disease_combinations.items()):
         check_array = []
-        print(name, vitamins)
+
         for vitamin_value in vitamins:
             if vitamin_value > 1:
                 check_array.append(1)
@@ -58,90 +58,62 @@ class MonsterDiagnosisAgent:
         patient_vitamins = convert_symbols(patient)
 
         # convert disease vitamin values to integers
-        for disease in list(diseases.values()):
-            convert_symbols(disease)
+        # for disease in list(diseases.values()):
+        #     convert_symbols(disease)
 
         # convert disease name values into their own array
-        names_list = []
-        for disease_name in list(diseases.keys()):
-            names_list.append(disease_name)
+        # names_list = []
+        # for disease_name in list(diseases.keys()):
+        #     names_list.append(disease_name)
 
-        # convert disease names and values from dictionary to separate arrays
-        names_list, values_list = self.create_value_arrays(diseases)
-        print("Initial Values")
-        print("---------------")
+        disease_combos = combinations(list(diseases.items()), 2)
 
-        print("namelist:", names_list)
-        print("valuelist:", *values_list, sep='\n')
-        print("patient", list(patient_vitamins.values()))
-        print("\n")
+        combine_dict = {}
+        for item in disease_combos:
 
-        # check uncombined initial set for a match
-        initial_diseases = dict(zip(names_list, values_list))
-        current_match = check_match(initial_diseases, patient_vitamins)
+            name_a = item[0][0]
+            name_b = item[1][0]
+            values_a = item[0][1]
+            # print(list(values_a.values()))
+            values_b = item[1][1]
+            # print(list(values_b.values()))
 
-        # while there is not a current match
-        while current_match is None:
+            sum_dict = {}
+            c_value = ''
+            for key, value in values_a.items():
+                # combination rules for positive vitamin
+                if value == '+':
+                    if values_b.get(key) == '+':
+                        c_value = '+'
+                    elif values_b.get(key) == '0':
+                        c_value = '+'
+                    elif values_b.get(key) == '-':
+                        c_value = '0'
+                # combination rules for neutral vitamins
+                elif value == '0':
+                    if values_b.get(key) == '+':
+                        c_value = '+'
+                    elif values_b.get(key) == '0':
+                        c_value = '0'
+                    elif values_b.get(key) == '-':
+                        c_value = '-'
+                # combination rules for negative vitamins
+                elif value == '-':
+                    if values_b.get(key) == '+':
+                        c_value = '0'
+                    elif values_b.get(key) == '0':
+                        c_value = '0'
+                    elif values_b.get(key) == '-':
+                        c_value = '-'
+                # build the sum dictionary for the combination
+                sum_dict[key] = c_value
+                # add the new dictionary as the value for the combination
+                combine_dict.update({name_a + "-" + name_b: sum_dict})
+        # print dictionary
+        for k, v in combine_dict.items():
+            print(k, '->', v)
 
-            # generate a new set of combinations
-            combinations_dict = self.generate_combinations(values_list, names_list, list(initial_diseases.values()),
-                                                           list(initial_diseases.keys()))
-            print("\n")
-            print("Loop Update")
-            print("---------------")
 
-            # update the working values
-            values_list = list(combinations_dict.values())
-            print("VLIST", *values_list, sep='\n')
-            names_list = list(combinations_dict.keys())
 
-            print(names_list)
-
-            # check for a match in the generated combinations
-            current_match = check_match(combinations_dict, patient_vitamins)
-        print("MATCH FOUND")
-        diagnosis = current_match.split(", ")
         return diagnosis
 
-    def create_value_arrays(self, disease_dict):
-        name_array = []
-        value_array = []
-        for name, vitamins in disease_dict.items():
-            name_array.append(name)
-            value_array.append(list(vitamins.values()))
-
-        return name_array, value_array
-
-    def generate_combinations(self, values_list, names_list, initial_values, initial_names):
-        print("Generate Combinations")
-        print("----------------------")
-        values_combine = []
-        names_combine = []
-
-        # find value combinations
-        # values_combine = combinations(values_list, 2)
-        print("ivalues", *initial_values, sep='\n')
-        for pair in product(values_list, initial_values):
-            if pair[1] != pair[0]:
-                values_combine.append(pair)
-        # print(*values_combine, sep='\n')
-
-        # get corresponding name combinations
-        # names_combine = combinations(names_list, 2)
-
-        for pair in product(names_list, initial_names):
-            if pair[1] not in pair[0]:
-                names_combine.append(pair)
-
-        comb_dict = {}
-
-        for name_pair in names_combine:
-            index = names_combine.index(name_pair)
-            comb_name = name_pair[0] + "," + name_pair[1]
-            comb_dict[comb_name] = sum_values(values_combine[index][0], values_combine[index][1])
-
-        # show generated combinations
-        for key, value in comb_dict.items():
-            print(key, value)
-
-        return comb_dict
