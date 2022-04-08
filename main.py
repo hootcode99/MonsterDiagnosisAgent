@@ -35,8 +35,8 @@ def test():
                  "J": "+", "K": "0", "L": "0", "M": "0", "N": "0", "O": "0", "P": "0", "Q": "0", "R": "0",
                  "S": "0", "T": "0", "U": "0", "V": "0", "W": "0", "X": "0", "Y": "0", "Z": "+"}
 
-    # print(test_agent.solve(diseases, patient_1))
-    print(test_agent.solve(diseases, patient_2))
+    print(test_agent.solve(diseases, patient_1))
+    # print(test_agent.solve(diseases, patient_2))
 
 
 if __name__ == "__main__":
