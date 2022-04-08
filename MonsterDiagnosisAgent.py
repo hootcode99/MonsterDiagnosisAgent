@@ -2,16 +2,16 @@ from itertools import combinations, product
 import numpy as np
 
 
-def convert_dict(dict):
-    for key, value in dict.items():
+def convert_symbols(disease_dict):
+    for key, value in disease_dict.items():
         if value == '0':
-            dict[key] = 0
+            disease_dict[key] = 0
         elif value == '+':
-            dict[key] = 1
+            disease_dict[key] = 1
         elif value == '-':
-            dict[key] = -1
+            disease_dict[key] = -1
 
-    return dict
+    return disease_dict
 
 
 def check_match(disease_combinations, patient_vitamins):
@@ -24,13 +24,13 @@ def check_match(disease_combinations, patient_vitamins):
     for name, vitamins in list(disease_combinations.items()):
         check_array = []
         print(name, vitamins)
-        for vitamin in vitamins:
-            if vitamin > 1:
+        for vitamin_value in vitamins:
+            if vitamin_value > 1:
                 check_array.append(1)
-            elif vitamin < -1:
+            elif vitamin_value < -1:
                 check_array.append(-1)
             else:
-                check_array.append(vitamin)
+                check_array.append(vitamin_value)
         print("check:", check_array)
         if check_array == patient_vitamins_values:
             match = name
@@ -53,17 +53,16 @@ class MonsterDiagnosisAgent:
 
     def solve(self, diseases, patient):
         diagnosis = []
-        names_list = []
-        values_list = []
 
         # convert patient vitamin values to integers
-        patient_vitamins = convert_dict(patient)
+        patient_vitamins = convert_symbols(patient)
 
         # convert disease vitamin values to integers
         for disease in list(diseases.values()):
-            convert_dict(disease)
+            convert_symbols(disease)
 
         # convert disease name values into their own array
+        names_list = []
         for disease_name in list(diseases.keys()):
             names_list.append(disease_name)
 
@@ -71,8 +70,10 @@ class MonsterDiagnosisAgent:
         names_list, values_list = self.create_value_arrays(diseases)
         print("Initial Values")
         print("---------------")
+
         print("namelist:", names_list)
         print("valuelist:", *values_list, sep='\n')
+        print("patient", list(patient_vitamins.values()))
         print("\n")
 
         # check uncombined initial set for a match
@@ -91,14 +92,14 @@ class MonsterDiagnosisAgent:
 
             # update the working values
             values_list = list(combinations_dict.values())
+            print("VLIST", *values_list, sep='\n')
             names_list = list(combinations_dict.keys())
 
-            print(values_list)
             print(names_list)
 
             # check for a match in the generated combinations
             current_match = check_match(combinations_dict, patient_vitamins)
-
+        print("MATCH FOUND")
         diagnosis = current_match.split(", ")
         return diagnosis
 
@@ -117,24 +118,27 @@ class MonsterDiagnosisAgent:
         values_combine = []
         names_combine = []
 
+        # find value combinations
+        # values_combine = combinations(values_list, 2)
+        print("ivalues", *initial_values, sep='\n')
         for pair in product(values_list, initial_values):
             if pair[1] != pair[0]:
                 values_combine.append(pair)
-        print(*values_combine, sep='\n')
+        # print(*values_combine, sep='\n')
+
+        # get corresponding name combinations
+        # names_combine = combinations(names_list, 2)
 
         for pair in product(names_list, initial_names):
             if pair[1] not in pair[0]:
                 names_combine.append(pair)
-        # find value combinations
-        # values_combine = combinations(values_list, 2)
-        # get corresponding name combinations
-        # names_combine = combinations(names_list, 2)
 
         comb_dict = {}
-        for val_pair in values_combine:
-            for name_pair in names_combine:
-                comb_name = name_pair[0] + "," + name_pair[1]
-                comb_dict[comb_name] = sum_values(val_pair[0], val_pair[1])
+
+        for name_pair in names_combine:
+            index = names_combine.index(name_pair)
+            comb_name = name_pair[0] + "," + name_pair[1]
+            comb_dict[comb_name] = sum_values(values_combine[index][0], values_combine[index][1])
 
         # show generated combinations
         for key, value in comb_dict.items():
