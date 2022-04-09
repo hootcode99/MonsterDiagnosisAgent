@@ -34,12 +34,13 @@ def test():
     patient_2 = {"A": "0", "B": "+", "C": "+", "D": "+", "E": "+", "F": "+", "G": "0", "H": "-", "I": "+",
                  "J": "+", "K": "0", "L": "0", "M": "0", "N": "0", "O": "0", "P": "0", "Q": "0", "R": "0",
                  "S": "0", "T": "0", "U": "0", "V": "0", "W": "0", "X": "0", "Y": "0", "Z": "+"}
-    patient_3 = {'A': '0', 'B': '+', 'C': '-', 'D': '0', 'E': '+', 'F': '-', 'G': '0', 'H': '0', 'I': '0',
-                 'J': '0', 'K': '+', 'L': '+', 'M': '-', 'N': '0', 'O': '0', 'P': '0', 'Q': '-', 'R': '0',
-                 'S': '0', 'T': '0', 'U': '-', 'V': '+', 'W': '0', 'X': '-', 'Y': '-', 'Z': '-'}
-    print(test_agent.solve(diseases, patient_1))
-    # print(test_agent.solve(diseases, patient_2))
-    # print(test_agent.solve(diseases, patient_3))
+    patient_3 = {'A': '0', 'B': '0', 'C': '+', 'D': '-', 'E': '-', 'F': '0', 'G': '0', 'H': '0', 'I': '+',
+                 'J': '+', 'K': '0', 'L': '0', 'M': '+', 'N': '0', 'O': '0', 'P': '+', 'Q': '0', 'R': '-',
+                 'S': '-', 'T': '0', 'U': '+', 'V': '+', 'W': '-', 'X': '-', 'Y': '-', 'Z': '0'}
+
+    print(test_agent.solve(diseases, patient_1))  # ['Alphaitis', 'Betatosis']
+    print(test_agent.solve(diseases, patient_2))  # ['Gammanoma', 'Deltaccol', 'Epsicusus']
+    print(test_agent.solve(diseases, patient_3))  # ['Alphaitis', 'Deltaccol', 'Epsicusus', 'Betatosis']
 
 
 if __name__ == "__main__":

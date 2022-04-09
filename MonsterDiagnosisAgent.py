@@ -1,91 +1,110 @@
+
 from itertools import combinations, product
 import numpy as np
 
 
-# # print dictionary
-# for k, v in diseases.items():
-#     print(k, '->', v)
-
-def generate_combinations(disease_combos, pair_count):
-    combine_dict = {}
-    print("LENGTH", pair_count)
-    # print("Disease Combos")
-
-    # print(*list(disease_combos), sep="\n")
-    # for each combination in the set
-    for item in disease_combos:
-
-        # access the first two sets of values
-        disease_a_name = item[0][0]
-        disease_b_name = item[1][0]
-        vitamins_a = item[0][1]
-        vitamins_b = item[1][1]
-
-        # sum the first two pairs
-        sum_dict = {}
-        combined_value = ''
-        # for each vitamin-level pair in disease_A
-        for vitamin, level in vitamins_a.items():
-            # combination rules for positive vitamin
-            if level == '+':
-                if vitamins_b.get(vitamin) == '+':
-                    combined_value = '+'
-                elif vitamins_b.get(vitamin) == '0':
-                    combined_value = '+'
-                elif vitamins_b.get(vitamin) == '-':
-                    combined_value = '0'
-            # combination rules for neutral vitamins
-            elif level == '0':
-                if vitamins_b.get(vitamin) == '+':
-                    combined_value = '+'
-                elif vitamins_b.get(vitamin) == '0':
-                    combined_value = '0'
-                elif vitamins_b.get(vitamin) == '-':
-                    combined_value = '-'
-            # combination rules for negative vitamins
-            elif level == '-':
-                if vitamins_b.get(vitamin) == '+':
-                    combined_value = '0'
-                elif vitamins_b.get(vitamin) == '0':
-                    combined_value = '0'
-                elif vitamins_b.get(vitamin) == '-':
-                    combined_value = '-'
-
-            # store the summed dictionary values
-            sum_dict[vitamin] = combined_value
-
-            # add the sum dictionary as the value for the combination
-            combine_dict.update({disease_a_name + "-" + disease_b_name: sum_dict})
-
-
-    print("Combine Dict")
-    print(*list(disease_combos), sep="\n")
-
-    # if there were more than two pairs
-    if pair_count > 2:
-        # rebuild array
-
-        # call this function recursively
-        print("NEXT ROUND")
-        generate_combinations(list(combine_dict.items()), pair_count - 1)
-
-    # otherwise
-    else:
-        # return the results
-        return combine_dict
-
-
-def check_match(combine_dict, patient):
+def check_match(combine_array, patient):
     solution = ''
-    for combo_name, vitamin_list in combine_dict.items():
+    for item in combine_array:
+        vitamin_list = item[1]
+        print(item[0], vitamin_list)
         # print(combo_name, vitamin_list)
         # print("Patient", patient)
         if patient == vitamin_list:
             print("------------MATCH FOUND--------------")
-            solution = combo_name.split('-')
+            solution = item[0].split('-')
             return solution
 
     return None
+
+
+def combine(tuple1, tuple2) -> tuple:
+    """
+    Combine 2 tuples
+    Ex. ('x', 0), ('y', 1) -> ('xy', 1)
+    """
+    element1 = tuple1[0] + "-" + tuple2[0]
+    sum_dict = {}
+    vitamins_a = tuple1[1]
+    vitamins_b = tuple2[1]
+    for vitamin, level in vitamins_a.items():
+        # print(vitamin, level)
+        # combination rules for positive vitamin
+        if level == '+':
+            if vitamins_b.get(vitamin) == '+':
+                combined_value = '+'
+            elif vitamins_b.get(vitamin) == '0':
+                combined_value = '+'
+            elif vitamins_b.get(vitamin) == '-':
+                combined_value = '0'
+        # combination rules for neutral vitamins
+        elif level == '0':
+            if vitamins_b.get(vitamin) == '+':
+                combined_value = '+'
+            elif vitamins_b.get(vitamin) == '0':
+                combined_value = '0'
+            elif vitamins_b.get(vitamin) == '-':
+                combined_value = '-'
+        # combination rules for negative vitamins
+        elif level == '-':
+            if vitamins_b.get(vitamin) == '+':
+                combined_value = '0'
+            elif vitamins_b.get(vitamin) == '0':
+                combined_value = '-'
+            elif vitamins_b.get(vitamin) == '-':
+                combined_value = '-'
+
+        # store the summed dictionary values
+        sum_dict[vitamin] = combined_value
+
+    element2 = sum_dict
+    return element1, element2
+
+
+def simplify_tuple(bag: tuple):
+    """
+    Simplify a tuple of tuples (a bag) into eventually 1 tuple
+    Ex. [(('x', 0), ('y', 1), ('z', 2)), (('a', 3), ('b', 4), ('c', 5))]
+    -> [(('xy', 1), ('z', 2)), (('ab', 7), ('c', 5))]
+    -> [('xyz', 3), ('abc', 12)].
+    """
+    combine_array = []
+    output_array= []
+    # Simplest case: Only 1 tuple in each tuple
+    for stuff in bag:
+        # For each tuple in the bag, combine the first two nested tuples recursively
+        while len(stuff) != 1:
+            if len(stuff) > 2:
+                # print("Before combo ", stuff)
+                # slice list to recombine
+                sliced = tuple(stuff[2:])  # everything after index 2
+                # print("Sliced stuff ", sliced)
+
+                new_tuple = combine(stuff[0], stuff[1]) # Now combine first two elements
+
+                temp = [new_tuple]  # turn tuple into list so we can use clear func
+                # add each tuple in sliced tuple to the list
+                for single in sliced:
+                    temp.append(single)
+                stuff = tuple(temp)  # turn back into a tuple
+
+                # print("After combo ", stuff)
+
+            else:
+                # print("Before combo ", stuff)
+                new_tuple = combine(stuff[0], stuff[1])
+
+                temp = [new_tuple]  # turn tuple into list so we can use clear func
+                stuff = tuple(temp)  # turn back into a tuple
+
+                # print("After combo ", stuff)
+                combine_array.append(stuff)
+
+    for item in combine_array:
+        for line in item:
+            output_array.append(line)
+
+    return output_array
 
 
 class MonsterDiagnosisAgent:
@@ -93,33 +112,28 @@ class MonsterDiagnosisAgent:
         pass
 
     def solve(self, diseases, patient):
-
+        print(patient)
         # check with initial values
-        diagnosis = check_match(diseases, patient)
+        diagnosis = check_match(list(diseases.items()), patient)
 
         # increment the number of combinations
         combo_counter = 2
 
         # until a diagnosis is found
         while diagnosis is None:
-
+            print("PAIR", combo_counter)
             # arrange combinations
             disease_combos = combinations(list(diseases.items()), combo_counter)
-            # print("DISEASE COMBOS")
-            # print(*list(disease_combos), sep="\n")
 
             # perform combinations
-            combine_dict = generate_combinations(disease_combos, combo_counter)
+            combine_array = simplify_tuple(list(disease_combos))
 
             # evaluate combinations
-            diagnosis = check_match(combine_dict, patient)
-
+            diagnosis = check_match(combine_array, patient)
+            if combo_counter == 5:
+                break
             # move to next combo if the answer has not been found
             combo_counter += 1
-            print("NEXT COMBO", combo_counter)
 
-            # temporary stop
-            if combo_counter == 4:
-                break
 
         return diagnosis
