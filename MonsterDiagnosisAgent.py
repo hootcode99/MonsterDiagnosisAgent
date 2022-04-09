@@ -1,6 +1,5 @@
 
-from itertools import combinations, product
-import numpy as np
+from itertools import combinations
 
 
 def check_match(combine_array, patient):
@@ -134,6 +133,5 @@ class MonsterDiagnosisAgent:
                 break
             # move to next combo if the answer has not been found
             combo_counter += 1
-
 
         return diagnosis
