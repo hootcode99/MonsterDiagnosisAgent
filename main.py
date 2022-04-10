@@ -1,5 +1,5 @@
 from MonsterDiagnosisAgent import MonsterDiagnosisAgent
-
+import timeit
 
 
 def test():
@@ -34,13 +34,23 @@ def test():
     patient_2 = {"A": "0", "B": "+", "C": "+", "D": "+", "E": "+", "F": "+", "G": "0", "H": "-", "I": "+",
                  "J": "+", "K": "0", "L": "0", "M": "0", "N": "0", "O": "0", "P": "0", "Q": "0", "R": "0",
                  "S": "0", "T": "0", "U": "0", "V": "0", "W": "0", "X": "0", "Y": "0", "Z": "+"}
-    patient_3 = {'A': '0', 'B': '0', 'C': '+', 'D': '-', 'E': '-', 'F': '0', 'G': '0', 'H': '0', 'I': '+',
-                 'J': '+', 'K': '0', 'L': '0', 'M': '+', 'N': '0', 'O': '0', 'P': '+', 'Q': '0', 'R': '-',
-                 'S': '-', 'T': '0', 'U': '+', 'V': '+', 'W': '-', 'X': '-', 'Y': '-', 'Z': '0'}
-
+    patient_3 = {"A": "+", "B": "0", "C": "-", "D": "0", "E": "0", "F": "+", "G": "0", "H": "0", "I": "+",
+                "J": "-", "K": "0", "L": "0", "M": "0", "N": "0", "O": "-", "P": "0", "Q": "0", "R": "0",
+                     "S": "0", "T": "0", "U": "0", "V": "0", "W": "0", "X": "0", "Y": "0", "Z": "+"}
+    start = timeit.default_timer()
     print(test_agent.solve(diseases, patient_1))  # ['Alphaitis', 'Betatosis']
+    stop = timeit.default_timer()
+    print('Time: ', round(((stop - start) * 1000000), 4), "Microseconds")
+
+    start = timeit.default_timer()
     print(test_agent.solve(diseases, patient_2))  # ['Gammanoma', 'Deltaccol', 'Epsicusus']
+    stop = timeit.default_timer()
+    print('Time: ', round(((stop - start) * 1000000), 4), "Microseconds")
+
+    start = timeit.default_timer()
     print(test_agent.solve(diseases, patient_3))  # ['Alphaitis', 'Deltaccol', 'Epsicusus', 'Betatosis']
+    stop = timeit.default_timer()
+    print('Time: ', round(((stop - start) * 1000000), 4), "Microseconds")
 
 
 if __name__ == "__main__":

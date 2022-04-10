@@ -6,7 +6,7 @@ def check_match(combine_array, patient):
     solution = ''
     for item in combine_array:
         vitamin_list = item[1]
-        print(item[0], vitamin_list)
+        # print(item[0], vitamin_list)
 
         # print("Patient", patient)
         if patient == vitamin_list:
@@ -111,7 +111,7 @@ class MonsterDiagnosisAgent:
         pass
 
     def solve(self, diseases, patient):
-        print("PATIENT", patient)
+        # print("PATIENT", patient)
         # check with initial values
         diagnosis = check_match(list(diseases.items()), patient)
 
@@ -120,7 +120,7 @@ class MonsterDiagnosisAgent:
 
         # until a diagnosis is found
         while diagnosis is None:
-            print("PAIR", combo_counter)
+            # print("PAIR", combo_counter)
             # arrange combinations
             disease_combos = combinations(list(diseases.items()), combo_counter)
 
